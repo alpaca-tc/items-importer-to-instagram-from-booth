@@ -29,6 +29,7 @@ class InstagramCsv
       'price', # 必須 | アイテムの価格です。価格の後に3文字の通貨コード(ISO 4217)を入力してください。小数点はコンマではなくドット(.)で入力してください。
       'link', # 必須 | アイテムを購入できる具体的な商品ページのURLです。
       'image_link', # 必須 | アイテムのメイン画像のURLです。画像はサポートされている形式(JPG/GIF/PNG)で500x500ピクセル以上でなければなりません。
+      'additional_image_link', # アイテムの追加画像のURL。最大20個の画像URLを含めます。複数のURLを区切るには、コンマを使用します。image_linkフィールドと同じ画像仕様に従ってください。文字数制限：2,000。
       'brand', # 必須 | アイテムのブランド名です。一意の製造部品番号(MPN)または国際取引商品番号(GTIN)を代わりに入力することもできます。GTINにはUPC、EAN、JAN、ISBNのいずれかを指定できます。(上限: 100文字)
       'google_product_category', # 任意 | アイテムのGoogle商品カテゴリです。商品カテゴリについて詳しくはhttps://www.facebook.com/business/help/526764014610932をご覧ください。
       'fb_product_category', # 任意 | アイテムのFacebook商品カテゴリです。商品カテゴリについて詳しくはhttps://www.facebook.com/business/help/526764014610932をご覧ください。
@@ -76,9 +77,10 @@ class InstagramCsv
         price: "#{@variation['price']} JPY",
         link: "https://yuhiro8717.booth.pm/items/#{@item.fetch('id')}",
         image_link: image_link,
+        additional_image_link: additional_image_link.join(','),
         brand: @variation.fetch('id'),
-        # google_product_category: '',
-        # fb_product_category: '',
+        google_product_category: 'Arts & Entertainment',
+        fb_product_category: 'arts & crafts',
         # quantity_to_sell_on_facebook: '',
         # sale_price: '',
         # sale_price_effective_date: '',
@@ -119,6 +121,12 @@ class InstagramCsv
 
     def image_link
       @item['images'][0]['file']['c_512x683']['url']
+    end
+
+    def additional_image_link
+      @item['images'].map do |image|
+        image['file']['base_resized']['url']
+      end
     end
   end
 end
